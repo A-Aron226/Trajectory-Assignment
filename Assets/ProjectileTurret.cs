@@ -131,8 +131,6 @@ public class ProjectileTurret : MonoBehaviour
         /////////////////////////////
         points.Clear();
         float accelY = -gravity.y;
-        float accelX = 0f;
-        float accelZ = 0f;
         float v = projectileSpeed;
 
         
