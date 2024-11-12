@@ -98,35 +98,33 @@ public class ProjectileTurret : MonoBehaviour
 
     public void Line() //Needs work
     {
-        float t = Time.deltaTime;
+        float t;
         float a = gravity.y;
         float vi = projectileSpeed;
-        float vf = 0.0f;
-        float d = ((vi + vf) / 2) * t;
+        float vf;
+        float d;
 
-        Vector3 length = new Vector3(0, d, 0);
+        //Calculating time
+        t = (-1f * vi) / a;
+        t = 2f * t;
+
+        //Calculating final velocity and displacement
+        vf = vi + a * t;
+        d = ((vi + vf) / 2f) * t;
 
         points.Clear();
         points.Add(barrelEnd.position);
 
         if (Physics.Raycast(barrelEnd.position, barrelEnd.forward, out RaycastHit hit, 1000.0f, targetLayer))
         {
-            points.Add(hit.point);
-
-            if (hit.collider)
-            {
-                points.Add(length);
-            }
+            Vector3 curve = hit.point; //temp variable 
+            points.Add(curve);
         }
         line.positionCount = points.Count;
 
-        for (int i = 0; i < points.Count; i++)
+        for (int i = 0; i < line.positionCount; i++)
         {
             line.SetPosition(i, points[i]);
         }
-
-        
-        //d = v * t + (1 / 2) * a * Mathf.Pow(t, 2);
-
     }
 }
