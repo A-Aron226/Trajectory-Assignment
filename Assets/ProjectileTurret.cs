@@ -1,6 +1,7 @@
 using Palmmedia.ReportGenerator.Core;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ProjectileTurret : MonoBehaviour
@@ -98,28 +99,70 @@ public class ProjectileTurret : MonoBehaviour
 
     public void Line() //Needs work
     {
-        float t;
-        float a = gravity.y;
-        float vi = projectileSpeed;
-        float vf;
-        float d;
+        //float t;
+        //float a = gravity.y;
+        //float vi = projectileSpeed;
+        //float vf;
+        //float d;
 
         //Calculating time
-        t = (-1f * vi) / a;
-        t = 2f * t;
+        //t = (-1f * vi) / a;
+        //t = 2f * t;
 
         //Calculating final velocity and displacement
-        vf = vi + a * t;
-        d = ((vi + vf) / 2f) * t;
+        //vf = vi + a * t;
+        //d = ((vi + vf) / 2f) * t;
+        /*float timeCount = t * time;
+        if (timeCount > 10)
+        {
+            timeCount = 0;
+        }*/
 
+        //float dispX = v * t + (0.5f) * accelX * Mathf.Pow(t, 2);
+        //float dispY = v * t + (0.5f) * accelY * Mathf.Pow(t, 2);
+        //float dispY = (v * t) + (0.5f * accelY * Mathf.Pow(t, 2));
+        //float dispZ = v * t + (0.5f) * accelZ * Mathf.Pow(t, 2);
+
+        /*if (Physics.Raycast(barrelEnd.position, barrelEnd.forward, out RaycastHit hit, 1000.0f, targetLayer))
+        {
+            points.Add(hit.point);
+        }*/
+
+        /////////////////////////////
         points.Clear();
+        float accelY = -gravity.y;
+        float accelX = 0f;
+        float accelZ = 0f;
+        float v = projectileSpeed;
+
+        
         points.Add(barrelEnd.position);
 
-        if (Physics.Raycast(barrelEnd.position, barrelEnd.forward, out RaycastHit hit, 1000.0f, targetLayer))
+        Vector3 vi = barrelEnd.forward * v;
+        float timeStep = 0.005f;
+        float maxTime = 1.0f;
+        Vector3 lastPosition = barrelEnd.position;
+
+        for (float t = 0;  t <= maxTime; t += timeStep)
         {
-            Vector3 curve = hit.point; //temp variable 
-            points.Add(curve);
+            float dispX = (vi.x * t);
+            float dispY = (vi.y * t) + (0.5f * accelY * Mathf.Pow(t, 2));
+            float dispZ = (vi.z * t);
+
+
+            Vector3 currDisp = new Vector3(dispX, dispY, dispZ);
+            Vector3 positionAtT = barrelEnd.position + currDisp;
+
+            if (Physics.Linecast(lastPosition, positionAtT, out RaycastHit hit, targetLayer))
+            {
+                points.Add(hit.point);
+                break;
+            }
+
+            points.Add(positionAtT);
+            lastPosition = positionAtT;
         }
+
         line.positionCount = points.Count;
 
         for (int i = 0; i < line.positionCount; i++)
